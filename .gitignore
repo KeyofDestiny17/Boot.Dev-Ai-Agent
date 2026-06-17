@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 .env
 .python-version
-uv.lock
+
 
 # Virtual environments
 .venv
