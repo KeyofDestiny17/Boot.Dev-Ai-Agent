@@ -12,11 +12,20 @@ def get_api_key():
     return api_key
 
 def get_gemini_response(api_key, prompt):
-    client = genai.Client(api_key = api_key)
+    client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt
-        ) 
+        )
+     
+    metadata = response.usage_metadata
+    if not metadata:
+        raise RuntimeError(
+            "Failed to get a response. Check if connected to internet"
+            )
+    print(f"Prompt tokens: {metadata.prompt_token_count}")
+    print(f"Response tokens: {metadata.candidates_token_count}")
+
     return response.text
 
 def main():
