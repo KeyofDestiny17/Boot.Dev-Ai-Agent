@@ -1,5 +1,6 @@
 import os
 import argparse
+
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -13,16 +14,10 @@ def get_api_key():
             )
     return api_key
 
-def parser():
-    parser = argparse.ArgumentParser(description="Gemini Flash 2.5 Free")
-    parser.add_argument("user_prompt", type=str, help="Your prompt for Gemini")
-    return parser.parse_args()
-    
-def get_gemini_response(api_key, parser):
-    args = parser()
+def get_gemini_response(api_key, user_prompt):
     client = genai.Client(api_key=api_key)
-    messages: list[types.chat.Content] = [
-        types.Content(role="user", parts=[types.Part(text=args.user_prompt)])
+    messages: list[types.Content] = [
+        types.Content(role="user", parts=[types.Part(text=user_prompt)])
     ]
     response = client.models.generate_content(
         model="gemini-2.5-flash",
@@ -40,9 +35,12 @@ def get_gemini_response(api_key, parser):
     return response.text
 
 def main():
+    parser = argparse.ArgumentParser(description="Gemini Flash 2.5 Free")
+    parser.add_argument("user_prompt", type=str, help="Your prompt for Gemini")
+    args = parser.parse_args()
     api_key = get_api_key()
     print("Waiting for Gemini response...")
-    text = get_gemini_response(api_key, parser)
+    text = get_gemini_response(api_key, args.user_prompt)
     print(text)
 
 
