@@ -14,7 +14,7 @@ def get_api_key():
             )
     return api_key
 
-def get_gemini_response(api_key, user_prompt):
+def get_gemini_response(api_key, user_prompt, verbose=False):
     client = genai.Client(api_key=api_key)
     messages: list[types.Content] = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)])
@@ -23,24 +23,31 @@ def get_gemini_response(api_key, user_prompt):
         model="gemini-2.5-flash",
         contents=messages
         )
-     
-    metadata = response.usage_metadata
-    if not metadata:
-        raise RuntimeError(
-            "Failed to get a response. Check if connected to internet"
-            )
-    print(f"Prompt tokens: {metadata.prompt_token_count}")
-    print(f"Response tokens: {metadata.candidates_token_count}")
+
+    if verbose:
+        metadata = response.usage_metadata
+        if not metadata:
+            raise RuntimeError(
+                "Failed to get a response. Check if connected to internet"
+                )
+        print(f"User prompt: {user_prompt}")
+        print(f"Prompt tokens: {metadata.prompt_token_count}")
+        print(f"Response tokens: {metadata.candidates_token_count}")
 
     return response.text
 
 def main():
     parser = argparse.ArgumentParser(description="Gemini Flash 2.5 Free")
     parser.add_argument("user_prompt", type=str, help="Your prompt for Gemini")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     api_key = get_api_key()
     print("Waiting for Gemini response...")
-    text = get_gemini_response(api_key, args.user_prompt)
+    text = get_gemini_response(
+        api_key,
+        args.user_prompt,
+        verbose=args.verbose,
+    )
     print(text)
 
 
