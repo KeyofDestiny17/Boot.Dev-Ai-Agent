@@ -1,10 +1,19 @@
 from functions.get_files_info import get_files_info
 
-print(get_files_info("calculator", "."))
-print(get_files_info("calculator", "pkg"))
+test_path = [".", "pkg", "/bin", "../"]
 
-print("Result for 'bin' directory:")
-print(f"  {get_files_info('calculator', '/bin')}")
+for path in test_path:
+    if path == ".":
+        description = "current directory"
+    else:
+        description = f"'{path}' directory"
+    
+    print(f"Result for {description}:")
+    result = get_files_info("calculator", path)
 
-print("Result for '../' directory:")
-print(f"  {get_files_info('calculator', '../')}")
+    if result.startswith("Error:"):
+        print(f"  {result}")
+    else:
+        for line in result.splitlines():
+            print(f"  {line}")
+    print("")

@@ -6,27 +6,22 @@ def get_files_info(working_directory, directory="."):
         target_dir = os.path.normpath(os.path.join(working_dir_abs, directory))
         valid_target_dir = os.path.commonpath([working_dir_abs, target_dir]) == working_dir_abs
 
-        if directory == ".":
-            header = "Result for current directory:"
-        else:
-            header = f"Result for '{directory}' directory:"
-
         if not valid_target_dir:
             return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
         if not os.path.isdir(target_dir):
             return f'Error: "{directory}" is not a directory'
 
         entries = []
-        for file in os.listdir(target_dir):
-            file_path = os.path.join(target_dir, file)
-            if os.path.isfile(file_path) or os.path.isdir(file_path):
-                entries.append(
-                    f"  - {file}: file_size={os.path.getsize(file_path)} bytes, is_dir={os.path.isdir(file_path)}"
-                )
+        with os.scandir(target_dir) as it:
+            for entry in it:
+                try:
+                    size = entry.stat().st_size
+                    is_dir = entry.is_dir
+                    entries.append(f"- {entry.name}: file_size={size} bytes, is_dir={os.path.isdir(is_dir)}")
+                except OSError:
+                    continue
 
-        lines = [header]
-        lines.extend(entries)
-        return "\n".join(lines)
+        return "\n".join(entries)
     
     except Exception as e:
         return f"Error: {e}"
