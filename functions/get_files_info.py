@@ -16,8 +16,8 @@ def get_files_info(working_directory, directory="."):
             for entry in it:
                 try:
                     size = entry.stat().st_size
-                    is_dir = entry.is_dir
-                    entries.append(f"- {entry.name}: file_size={size} bytes, is_dir={os.path.isdir(is_dir)}")
+                    is_dir = entry.is_dir()
+                    entries.append(f"- {entry.name}: file_size={size} bytes, is_dir={is_dir}")
                 except OSError:
                     continue
 
