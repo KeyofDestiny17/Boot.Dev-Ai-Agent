@@ -1,15 +1,17 @@
 from functions.get_file_content import get_file_content
 
-test_files = ["lorem.txt", "main.py", "pkg/calculator.py", "/bin/cat", "pkg/does_not_exist.py"]
+result = get_file_content("calculator", "lorem.txt")
+print(f"lorem.txt length: {len(result)}")
+print(f"lorem.txt truncated: {'truncated' in result}")
 
-for file in test_files:
-    result = get_file_content("calculator", file)
-    print(f"{file} length: {len(result)}")
-    print(f"{file} truncated: {'truncated' in result}")
+result = get_file_content("calculator", "main.py")
+print(result)
 
-    if result.startswith("Error:"):
-        print(f"  {result}")
-    else:
-        for line in result.splitlines():
-            print(f"  {line}")
-    print("")
+result = get_file_content("calculator", "pkg/calculator.py")
+print(result)
+
+result = get_file_content("calculator", "/bin/cat")
+print(result)
+
+result = get_file_content("calculator", "pkg/does_not_exist.py")
+print(result)
